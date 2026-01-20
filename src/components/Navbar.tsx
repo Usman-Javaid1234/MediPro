@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -49,11 +50,14 @@ const Navbar = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">M</span>
-            </div>
-            <span className="text-xl lg:text-2xl font-bold text-primary">MediPro</span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/assets/logo.jpg"
+              alt="MediPro Logo"
+              width={120}
+              height={50}
+              className="h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -119,8 +123,8 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      onClick={handleLogout} 
+                    <DropdownMenuItem
+                      onClick={handleLogout}
                       className="cursor-pointer text-destructive"
                       disabled={isLoggingOut}
                     >
@@ -161,28 +165,28 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-4">
-              <Link 
-                href="/shop" 
+              <Link
+                href="/shop"
                 className="text-foreground/80 hover:text-primary font-medium transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Shop
               </Link>
-              <Link 
-                href="/about" 
+              <Link
+                href="/about"
                 className="text-foreground/80 hover:text-primary font-medium transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="text-foreground/80 hover:text-primary font-medium transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
               </Link>
-              
+
               {isLoading ? (
                 <div className="flex items-center justify-center py-4">
                   <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -207,9 +211,9 @@ const Navbar = () => {
                         My Orders
                       </Button>
                     </Link>
-                    <Button 
-                      variant="destructive" 
-                      className="w-full" 
+                    <Button
+                      variant="destructive"
+                      className="w-full"
                       onClick={handleLogout}
                       disabled={isLoggingOut}
                     >
