@@ -1,70 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, Star } from "lucide-react";
+'use client';
 
-const products = [
-  {
-    id: 1,
-    name: "Digital Blood Pressure Monitor",
-    price: 4500,
-    originalPrice: 5500,
-    rating: 4.8,
-    reviews: 124,
-    image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-  {
-    id: 2,
-    name: "Infrared Thermometer",
-    price: 2800,
-    originalPrice: 3200,
-    rating: 4.9,
-    reviews: 89,
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-  {
-    id: 3,
-    name: "Pulse Oximeter Pro",
-    price: 1800,
-    originalPrice: 2200,
-    rating: 4.7,
-    reviews: 156,
-    image: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-  {
-    id: 4,
-    name: "Digital Glucometer Kit",
-    price: 3500,
-    originalPrice: 4000,
-    rating: 4.6,
-    reviews: 98,
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-  {
-    id: 5,
-    name: "Nebulizer Machine",
-    price: 5500,
-    originalPrice: 6500,
-    rating: 4.8,
-    reviews: 67,
-    image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-  {
-    id: 6,
-    name: "Professional Stethoscope",
-    price: 2500,
-    originalPrice: 3000,
-    rating: 4.9,
-    reviews: 203,
-    image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400&h=400&fit=crop",
-    inStock: true,
-  },
-];
+import { Button } from "@/components/ui/button";
+import { ShoppingCart, Star, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useFeaturedProducts } from "@/lib/api/hooks";
+import { useCart } from "@/context/CartContext";
+import { Product } from "@/lib/api/types";
+import { useToast } from "@/components/ui/use-toast";
 
 const FeaturedProducts = () => {
+  const { data, isLoading, error } = useFeaturedProducts(6);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-PK", {
       style: "currency",
@@ -72,6 +20,99 @@ const FeaturedProducts = () => {
       minimumFractionDigits: 0,
     }).format(price);
   };
+
+  const handleAddToCart = async (product: Product) => {
+    try {
+      await addToCart(product, 1);
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4">
+              Featured Products
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Discover our most popular medical devices trusted by healthcare professionals
+            </p>
+          </div>
+          
+          {/* Loading skeleton */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {[...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="bg-card rounded-2xl border border-border overflow-hidden animate-pulse"
+              >
+                <div className="aspect-square bg-muted" />
+                <div className="p-5 lg:p-6 space-y-3">
+                  <div className="h-4 bg-muted rounded w-1/3" />
+                  <div className="h-5 bg-muted rounded w-3/4" />
+                  <div className="h-6 bg-muted rounded w-1/2" />
+                  <div className="h-10 bg-muted rounded w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4">
+              Featured Products
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              Unable to load products at this time. Please try again later.
+            </p>
+            <Button onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const products = data?.items || [];
+
+  // No products state
+  if (products.length === 0) {
+    return (
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4">
+              Featured Products
+            </h2>
+            <p className="text-muted-foreground">
+              No featured products available at the moment.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 lg:py-24 bg-background">
@@ -95,23 +136,30 @@ const FeaturedProducts = () => {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Image */}
-              <div className="relative aspect-square overflow-hidden bg-muted">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {product.inStock && (
-                  <div className="absolute top-4 left-4 bg-success text-success-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                    In Stock
-                  </div>
-                )}
-                {product.originalPrice > product.price && (
-                  <div className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                    Sale
-                  </div>
-                )}
-              </div>
+              <Link href={`/shop/${product.id}`}>
+                <div className="relative aspect-square overflow-hidden bg-muted">
+                  <img
+                    src={product.thumbnail || product.images[0] || '/placeholder-product.jpg'}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {product.stock_quantity > 0 && (
+                    <div className="absolute top-4 left-4 bg-success text-success-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                      In Stock
+                    </div>
+                  )}
+                  {product.stock_quantity === 0 && (
+                    <div className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                      Out of Stock
+                    </div>
+                  )}
+                  {product.original_price && product.original_price > product.price && (
+                    <div className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                      Sale
+                    </div>
+                  )}
+                </div>
+              </Link>
 
               {/* Content */}
               <div className="p-5 lg:p-6">
@@ -119,32 +167,43 @@ const FeaturedProducts = () => {
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-accent text-accent" />
-                    <span className="text-sm font-medium text-foreground">{product.rating}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {product.average_rating?.toFixed(1) || '0.0'}
+                    </span>
                   </div>
-                  <span className="text-sm text-muted-foreground">({product.reviews} reviews)</span>
+                  <span className="text-sm text-muted-foreground">
+                    ({product.review_count || 0} reviews)
+                  </span>
                 </div>
 
                 {/* Name */}
-                <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                  {product.name}
-                </h3>
+                <Link href={`/shop/${product.id}`}>
+                  <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                    {product.name}
+                  </h3>
+                </Link>
 
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-xl font-bold text-foreground">
                     {formatPrice(product.price)}
                   </span>
-                  {product.originalPrice > product.price && (
+                  {product.original_price && product.original_price > product.price && (
                     <span className="text-sm text-muted-foreground line-through">
-                      {formatPrice(product.originalPrice)}
+                      {formatPrice(product.original_price)}
                     </span>
                   )}
                 </div>
 
                 {/* Add to Cart */}
-                <Button className="w-full" variant="default">
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
+                <Button
+                  className="w-full"
+                  variant="default"
+                  disabled={product.stock_quantity === 0}
+                  onClick={() => handleAddToCart(product)}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </Button>
               </div>
             </div>
@@ -153,9 +212,11 @@ const FeaturedProducts = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            View All Products
-          </Button>
+          <Link href="/shop">
+            <Button variant="outline" size="lg">
+              View All Products
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
