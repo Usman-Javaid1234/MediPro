@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import logo from "@/assets/medipro-logo4.png";
+import Image from "next/image"; 
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -46,7 +45,7 @@ const Navbar = () => {
           {/* Logo */}
           <a href="#home" className="flex items-center gap-2">
             <Image
-              src={logo}
+              src="/medipro-logo4.png"
               alt="MediPro Logo"
               width={40}
               height={40}

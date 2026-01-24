@@ -4,10 +4,6 @@ import { useState, useEffect } from "react";
 import { Check, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import productMain from "@/assets/pic2.png";
-import kitcontents from "@/assets/kit-contents.jpg";
-import oil from "@/assets/oil.png";
-import productcloseup from "@/assets/product-closeup.jpg";
 const features = [
   "Medical-grade materials",
   "Clinically proven effectiveness",
@@ -20,21 +16,21 @@ const features = [
 // Multiple product images for slideshow
 const productImages = [
   {
-    src: productMain,
+    src: "/pic2.png",
     alt: "MediPro Vacuum Erection Device - Main View",
   },
   {
-    src: kitcontents,
+    src: "/kit-contents.jpg",
     alt: "MediPro Vacuum Erection Device - Kit Contents",
   },
   {
-    src: productcloseup,
+    src: "/product-closeup.jpg",
     alt: "MediPro Vacuum Erection Device - Close Up",
   },
-  {    src: oil,
+  {
+    src: "/oil.png",
     alt: "MediPro Vacuum Erection Device - Accessory Oil",
   },
- 
 ];
 
 const ProductShowcase = () => {

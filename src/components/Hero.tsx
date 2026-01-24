@@ -3,7 +3,6 @@
 import { Shield, Package, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import heroBg from "@/assets/hero-bg.png";
 
 const trustBadges = [
   { icon: Shield, text: "FDA Approved Technology" },
@@ -27,7 +26,7 @@ const Hero = () => {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={heroBg}
+          src="/hero-bg.png"
           alt="Hero Background"
           fill
           className="object-cover"
