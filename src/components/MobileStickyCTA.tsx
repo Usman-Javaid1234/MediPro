@@ -20,7 +20,7 @@ const MobileStickyCTA = () => {
         onClick={scrollToProduct}
       >
         <ShoppingCart className="h-5 w-5 mr-2" />
-        Order Now — PKR 12,999
+        Order Now — PKR 3500
       </Button>
     </div>
   );
